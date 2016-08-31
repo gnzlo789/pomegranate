@@ -121,7 +121,7 @@ cdef class BayesianNetwork( Model ):
 			keys = state.distribution.keys()
 			d = DiscreteDistribution({ key: 1./len(keys) for key in keys })
 			m = State( d, state.name )
-
+	
 			# Add the state to the factor graph
 			self.graph.add_node( m )
 
@@ -136,15 +136,15 @@ cdef class BayesianNetwork( Model ):
 			self.graph.add_node( f )
 			self.graph.add_edge( m, f )
 
-			f_mapping[state] = f
-			m_mapping[state] = m
-			d_mapping[state.distribution] = d
+			f_mapping[str(state)] = f
+			m_mapping[str(state)] = m
+			d_mapping[str(state.distribution)] = d
 
 			# Progress the counter by one
 			j += 1
 
 		for a, b in self.edges:
-			self.graph.add_edge( m_mapping[a], f_mapping[b] )
+			self.graph.add_edge( m_mapping[str(a)], f_mapping[str(b)] )
 
 		# Now go back and redirect parent pointers to the appropriate
 		# objects.
@@ -152,7 +152,7 @@ cdef class BayesianNetwork( Model ):
 			d = state.distribution
 			if isinstance( d, ConditionalProbabilityTable ):
 				dist = fa_mapping[d]
-				d.parameters[1] = [ d_mapping[parent] for parent in d.parameters[1] ]
+				d.parameters[1] = [ d_mapping[str(parent)] for parent in d.parameters[1] ]
 				state.distribution = d.joint()
 				state.distribution.parameters[1].append( dist )
 

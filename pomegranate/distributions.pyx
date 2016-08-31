@@ -2308,7 +2308,7 @@ cdef class ConditionalProbabilityTable( MultivariateDistribution ):
 		self.frozen = False
 
 		if keys:
-			self.parameters = [ table, parents, keys ]
+			self.parameters = [ numpy.array(table), parents, keys ]
 		else:
 			keys = []
 			values = numpy.zeros( len(table) )
